@@ -24,19 +24,17 @@
             <div class="grid-cell"></div>
             <div class="grid-cell"></div>
         </div>
-        <div class="items">
-            <div class="item" [ngStyle]="{top: '10px', left: '10px', 'background-color': 'brown'}">
-                <div class="item-title">2</div>
+        <div *ngFor="let item of items" class="items">
+            <div class="item" [ngStyle]="getStyles(item)">
+                <div class="item-title">{{item.value}}</div>
             </div>
-            <div class="item" [ngStyle]="{top: '123px', left: '120px', 'background-color': 'blue'}">
+            <div class="item" [ngStyle]="{top: '120px', left: '10px', 'background-color': 'blue'}">
                 <div class="item-title">4</div>
             </div>
-            <div class="item" [ngStyle]="{top: '238px', left: '230px', 'background-color': 'navy'}">
+            <div class="item" [ngStyle]="{top: '10px', left: '120px', 'background-color': 'navy'}">
                 <div class="item-title">6</div>
             </div>
-            <div class="item" [ngStyle]="{top: '352px', left: '340px', 'background-color': 'orange'}">
-                <div class="item-title">8</div>
-            </div>
+
         </div>
     </div>
 </div>
