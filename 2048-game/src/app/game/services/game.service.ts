@@ -5,29 +5,62 @@ import { IItem } from "../models/item";
   providedIn: "root",
 })
 export class GameService {
-  items: IItem[] = [
-    { value: 2, col: 1, row: 1 },
-    { value: 4, col: 1, row: 2 },
-    { value: 8, col: 1, row: 3 },
-    { value: 16, col: 1, row: 4 },
-    { value: 32, col: 2, row: 1 },
-    { value: 64, col: 2, row: 2 },
-    { value: 128, col: 2, row: 3 },
-    { value: 256, col: 2, row: 4 },
-    { value: 512, col: 3, row: 1 },
-    { value: 1024, col: 3, row: 2 },
-    { value: 2048, col: 3, row: 3 },
-  ];
+  private size = 4;
+  private availableCells: number[] = [];
 
-  constructor() {}
-
-  left(): void {}
-
-  up(): void {}
-
-  right(): void {
-    this.items = [];
+  private get emptyCells(): number[] {
+    const notEmptyCells = this.notEmptyCells;
+    return this.availableCells.filter(
+      (position) => !notEmptyCells.includes(position)
+    );
   }
 
-  down(): void {}
+  private get notEmptyCells(): number[] {
+    return this.items.map((item) => item.row * 10 + item.col);
+  }
+  items: IItem[] = [];
+
+  constructor() {
+    this.generateAvailableCells();
+    this.generateItems();
+  }
+
+  left(): void {
+    this.generateItems();
+  }
+
+  up(): void {
+    this.generateItems();
+  }
+
+  right(): void {
+    this.generateItems();
+  }
+
+  down(): void {
+    this.generateItems();
+  }
+
+  private generateItems(length: number = 2) {
+    const positions: number[] = this.emptyCells
+      .sort(() => Math.random() - 0.5)
+      .slice(0, length);
+
+    this.items = [
+      ...this.items,
+      ...positions.map<IItem>((position) => ({
+        value: 2,
+        col: position % 10,
+        row: (position - (position % 10)) / 10,
+      })),
+    ];
+  }
+
+  private generateAvailableCells() {
+    for (let row = 1; row <= this.size; row++) {
+      for (let col = 1; col <= this.size; col++) {
+        this.availableCells.push(row * 10 + col);
+      }
+    }
+  }
 }
