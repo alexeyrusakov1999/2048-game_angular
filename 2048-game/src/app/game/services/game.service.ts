@@ -26,19 +26,64 @@ export class GameService {
   }
 
   left(): void {
-    this.generateItems();
+    this.move();
   }
 
   up(): void {
-    this.generateItems();
+    this.move();
   }
 
   right(): void {
-    this.generateItems();
+    this.move();
   }
 
   down(): void {
+    this.move();
+  }
+
+  private move() {
+    this.clearDeletedItems();
+
+    const mergedItems: IItem[] = [];
+
+    for (let row = 1; row <= this.size; row++) {
+      const rowItems = this.items
+        .filter((item) => item.row === row)
+        .sort((a, b) => a.col - b.col);
+      console.log(rowItems);
+      let col = 1;
+      let merged = false;
+      let prevItem: IItem | null = null;
+
+      for (let i = 0; i < rowItems.length; i++) {
+        const item = rowItems[i];
+
+        if (prevItem) {
+          if (merged) {
+            merged = false;
+          } else if (item.value === prevItem.value) {
+            col--;
+            prevItem.isOnDelete = true;
+            item.isOnDelete = true;
+
+            mergedItems.push({ value: item.value * 2, col, row });
+
+            merged = true;
+          }
+        }
+        item.col = col;
+        col++;
+        prevItem = item;
+      }
+    }
+
+    this.items = [...this.items, ...mergedItems];
+
     this.generateItems();
+  }
+
+  private clearDeletedItems() {
+    this.items = this.items.filter((item) => !item.isOnDelete);
   }
 
   private generateItems(length: number = 2) {
