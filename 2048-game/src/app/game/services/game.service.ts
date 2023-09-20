@@ -26,32 +26,40 @@ export class GameService {
   }
 
   left(): void {
-    this.move();
+    this.move("row", "col", false);
   }
 
   up(): void {
-    this.move();
+    this.move("col", "row", false);
   }
 
   right(): void {
-    this.move();
+    this.move("row", "col", true);
   }
 
   down(): void {
-    this.move();
+    this.move("col", "row", true);
   }
 
-  private move() {
+  private move(
+    dimX: "col" | "row" = "row",
+    dimY: "col" | "row" = "col",
+    reverse: boolean = false
+  ) {
     this.clearDeletedItems();
 
     const mergedItems: IItem[] = [];
 
-    for (let row = 1; row <= this.size; row++) {
+    for (let x = 1; x <= this.size; x++) {
       const rowItems = this.items
-        .filter((item) => item.row === row)
-        .sort((a, b) => a.col - b.col);
-      console.log(rowItems);
-      let col = 1;
+        .filter((item) => item[dimX] === x)
+        .sort((a, b) => a[dimY] - b[dimY]);
+
+      if (reverse) {
+        rowItems.reverse();
+      }
+
+      let y = reverse ? this.size : 1;
       let merged = false;
       let prevItem: IItem | null = null;
 
@@ -62,17 +70,21 @@ export class GameService {
           if (merged) {
             merged = false;
           } else if (item.value === prevItem.value) {
-            col--;
+            reverse ? y++ : y--;
             prevItem.isOnDelete = true;
             item.isOnDelete = true;
 
-            mergedItems.push({ value: item.value * 2, col, row });
+            mergedItems.push({
+              value: item.value * 2,
+              [dimY]: y,
+              [dimX]: x,
+            } as any);
 
             merged = true;
           }
         }
-        item.col = col;
-        col++;
+        item[dimY] = y;
+        reverse ? y-- : y++;
         prevItem = item;
       }
     }
