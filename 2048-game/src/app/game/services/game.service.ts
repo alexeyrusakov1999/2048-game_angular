@@ -19,6 +19,7 @@ export class GameService {
     return this.items.map((item) => item.row * 10 + item.col);
   }
   items: IItem[] = [];
+  theEnd: boolean = false;
 
   constructor() {
     this.generateAvailableCells();
@@ -46,26 +47,27 @@ export class GameService {
     dimY: "col" | "row" = "col",
     reverse: boolean = false
   ) {
+    if (this.theEnd || !this.canIMove(dimX)) {
+      return;
+    }
     this.clearDeletedItems();
 
     const mergedItems: IItem[] = [];
 
     for (let x = 1; x <= this.size; x++) {
-      const rowItems = this.items
+      const items: IItem[] = this.items
         .filter((item) => item[dimX] === x)
         .sort((a, b) => a[dimY] - b[dimY]);
 
       if (reverse) {
-        rowItems.reverse();
+        items.reverse();
       }
 
       let y = reverse ? this.size : 1;
       let merged = false;
       let prevItem: IItem | null = null;
 
-      for (let i = 0; i < rowItems.length; i++) {
-        const item = rowItems[i];
-
+      for (const item of items) {
         if (prevItem) {
           if (merged) {
             merged = false;
@@ -92,6 +94,8 @@ export class GameService {
     this.items = [...this.items, ...mergedItems];
 
     this.generateItems();
+
+    this.theEnd = this.thisIsTheEnd();
   }
 
   private clearDeletedItems() {
@@ -111,6 +115,35 @@ export class GameService {
         row: (position - (position % 10)) / 10,
       })),
     ];
+  }
+
+  private thisIsTheEnd() {
+    return !this.canIMove("row") && !this.canIMove("col");
+  }
+
+  private canIMove(dimX: "row" | "col") {
+    const dimY = dimX === "row" ? "col" : "row";
+    for (let x = 1; x <= this.size; x++) {
+      const items = this.items
+        .filter((item) => !item.isOnDelete && item[dimX] === x)
+        .sort((a, b) => a[dimY] - b[dimY]);
+
+      if (items.length !== this.size) {
+        return true;
+      }
+
+      let prevValue = 0;
+
+      for (const item of items) {
+        if (item.value === prevValue) {
+          return true;
+        }
+
+        prevValue = item.value;
+      }
+    }
+
+    return false;
   }
 
   private generateAvailableCells() {
