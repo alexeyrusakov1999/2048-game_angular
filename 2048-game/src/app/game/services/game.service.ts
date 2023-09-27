@@ -121,7 +121,11 @@ export class GameService {
     return !this.canIMove("row") && !this.canIMove("col");
   }
 
-  private canIMove(dimX: "row" | "col") {
+  private canIMove(
+    dimX: "row" | "col",
+    skipDir: boolean = true,
+    forward: boolean = false
+  ) {
     const dimY = dimX === "row" ? "col" : "row";
     for (let x = 1; x <= this.size; x++) {
       const items = this.items
@@ -129,7 +133,22 @@ export class GameService {
         .sort((a, b) => a[dimY] - b[dimY]);
 
       if (items.length !== this.size) {
-        return true;
+        if (skipDir) {
+          return true;
+        }
+
+        const length = items.length;
+        const lockedPositions: number[] = [];
+
+        const start = forward ? 1 : this.size + 1 - length;
+        const end = forward ? length : this.size;
+        for (let i = start; i <= end; i++) {
+          lockedPositions.push(i);
+        }
+
+        if (items.find((item) => !lockedPositions.includes(item[dimY]))) {
+          return true;
+        }
       }
 
       let prevValue = 0;
