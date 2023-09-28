@@ -3,6 +3,7 @@
     padding: 10px;
     display: inline-block;
     position: relative;
+
 }
 
 .grid-row {
@@ -79,4 +80,57 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.new-game-btn {
+    margin: 0 20px;
+}
+
+.end-modal {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+
+}
+
+.modal-text {
+    font-size: 22px;
+    text-align: center;
+}
+
+.btn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.btn-next,
+.btn-reset {
+    font-size: 18px;
+
+
+}
+
+.opacity {
+    opacity: 0.2;
+}
+
+.end-modal.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }

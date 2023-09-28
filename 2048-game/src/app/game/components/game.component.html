@@ -1,5 +1,9 @@
 <div class="game-container">
-    <div class="grid-container">
+    <h2 [ngClass]='getClass()'>Scores: <strong>{{gameService.scores}}</strong>
+        <button (click)="this.startNewGame()" class="new-game-btn">Начать
+            новую игру</button>
+    </h2>
+    <div [ngClass]="getClass()" class="grid-container">
         <div class="grid-row">
             <div class="grid-cell"></div>
             <div class="grid-cell"></div>
@@ -32,6 +36,14 @@
         <div *ngIf="gameService.theEnd" class="overlay">
             <div class="overlay-text">The End</div>
         </div>
+    </div>
+    <div *ngIf="isModalOpen && finish" class="end-modal">
+        <p class="modal-text">Поздравляем! Вы достигли квадрата 2048. Желаете продолжить игру далее?</p>
+        <div class="btn-container">
+            <button class="btn-next" (click)="this.closeModal()">Продолжить игру</button>
+            <button class="btn-reset" (click)="this.startNewGame()">Начать новую игру</button>
+        </div>
+
     </div>
 
 </div>

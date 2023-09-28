@@ -30,9 +30,30 @@ export class GameComponent implements OnInit {
     ArrowDown: "down",
   };
 
+  isModalOpen: boolean = true;
+  isFinishGame: boolean = false;
+
   constructor(public gameService: GameService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.updateFinish();
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  get finish(): boolean {
+    return this.gameService.scores >= 200;
+  }
+
+  private updateFinish() {
+    this.isFinishGame = this.finish;
+  }
+
+  getClass() {
+    return this.isModalOpen && this.isFinishGame ? "opacity" : "";
+  }
 
   getStyles(item: IItem): { [p: string]: string } {
     const top = item.row * 110 - 100 + "px";
@@ -50,6 +71,13 @@ export class GameComponent implements OnInit {
     if (methodName) {
       (this.gameService as any)[methodName]();
       console.log(methodName);
+      this.updateFinish();
     }
+  }
+
+  startNewGame() {
+    this.gameService.resetGame();
+    this.isFinishGame = false;
+    this.isModalOpen = true;
   }
 }

@@ -18,11 +18,21 @@ export class GameService {
   private get notEmptyCells(): number[] {
     return this.items.map((item) => item.row * 10 + item.col);
   }
+
+  scores = 0;
   items: IItem[] = [];
   theEnd: boolean = false;
 
   constructor() {
     this.generateAvailableCells();
+    this.generateItems();
+  }
+
+  resetGame() {
+    this.scores = 0;
+    this.items = [];
+    this.theEnd = false;
+
     this.generateItems();
   }
 
@@ -47,7 +57,7 @@ export class GameService {
     dimY: "col" | "row" = "col",
     reverse: boolean = false
   ) {
-    if (this.theEnd || !this.canIMove(dimX)) {
+    if (this.theEnd || !this.canIMove(dimX, false, reverse)) {
       return;
     }
     this.clearDeletedItems();
@@ -90,6 +100,8 @@ export class GameService {
         prevItem = item;
       }
     }
+
+    this.scores += mergedItems.reduce((acc, item) => acc + item.value, 0);
 
     this.items = [...this.items, ...mergedItems];
 
@@ -140,8 +152,8 @@ export class GameService {
         const length = items.length;
         const lockedPositions: number[] = [];
 
-        const start = forward ? 1 : this.size + 1 - length;
-        const end = forward ? length : this.size;
+        const start = forward ? this.size + 1 - length : 1;
+        const end = forward ? this.size : length;
         for (let i = start; i <= end; i++) {
           lockedPositions.push(i);
         }
