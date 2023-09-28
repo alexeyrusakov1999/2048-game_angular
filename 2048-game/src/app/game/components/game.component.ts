@@ -44,7 +44,7 @@ export class GameComponent implements OnInit {
   }
 
   get finish(): boolean {
-    return this.gameService.scores >= 200;
+    return this.gameService.scores >= 20212;
   }
 
   private updateFinish() {
