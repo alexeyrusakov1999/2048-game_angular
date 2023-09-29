@@ -68,6 +68,7 @@ export class GameComponent implements OnInit {
   @HostListener("window:keyup", ["$event"])
   onKeyUp(event: KeyboardEvent) {
     const methodName = this.keyEventCodeMap[event.code];
+    if (this.isFinishGame && this.isModalOpen) return;
     if (methodName) {
       (this.gameService as any)[methodName]();
       console.log(methodName);
